@@ -1,0 +1,22 @@
+tasks:
+  - init: |
+      # 安装桌面环境、VNC服务器和Firefox
+      sudo apt-get update
+      sudo apt-get install -y xfce4 xfce4-goodies tightvncserver firefox
+      # 设置VNC密码（此处为 "gitpod"）
+      mkdir -p ~/.vnc
+      echo "gitpod" | vncpasswd -f > ~/.vnc/passwd
+      chmod 600 ~/.vnc/passwd
+    command: |
+      # 启动VNC服务器（端口5901）
+      vncserver :1 -geometry 1280x800 -depth 24
+      # 安装noVNC（通过浏览器访问VNC）
+      git clone https://github.com/novnc/noVNC.git
+      ./noVNC/utils/novnc_proxy --vnc localhost:5901 --listen 6080
+      sleep infinity
+
+ports:
+  - port: 5901  # VNC服务端口
+    onOpen: ignore
+  - port: 6080  # Web访问端口
+    onOpen: open-browser
